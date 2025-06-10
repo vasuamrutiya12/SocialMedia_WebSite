@@ -1,0 +1,5 @@
+export const CREATE_STORY = "CREATE_STORY";
+export const GET_ALL_STORIES = "GET_ALL_STORIES";
+export const GET_USER_STORIES = "GET_USER_STORIES";
+export const STORY_ERROR = "STORY_ERROR";
+export const MARK_STORY_WATCHED = "MARK_STORY_WATCHED";

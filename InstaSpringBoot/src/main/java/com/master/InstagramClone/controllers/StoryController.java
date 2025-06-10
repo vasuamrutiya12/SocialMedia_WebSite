@@ -24,6 +24,11 @@ public class StoryController {
         return storyService.createStory(story, reqUser.getId());
     }
 
+    @GetMapping()
+    public List<Story> getAllStroy()throws Exception{
+        return storyService.findAllStory();
+    }
+
     @GetMapping("/user/{userId}")
     public List<Story> getStoryByUserId(@PathVariable("userId")Integer userId) throws Exception {
         return storyService.findStoryByUserId(userId);

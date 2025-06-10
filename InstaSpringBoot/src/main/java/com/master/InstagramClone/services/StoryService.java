@@ -8,6 +8,6 @@ import java.util.List;
 public interface StoryService {
 
     public Story createStory(Story story,Integer userId) throws Exception;
-
+    public List<Story> findAllStory()throws Exception;
     public List<Story> findStoryByUserId(Integer userId) throws Exception;
 }

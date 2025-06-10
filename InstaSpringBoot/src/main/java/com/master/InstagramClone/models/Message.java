@@ -1,6 +1,7 @@
 package com.master.InstagramClone.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,6 +20,8 @@ public class Message {
     private Integer id;
 
     private String content;
+
+    @JsonProperty("image")
     private String img;
 
     @ManyToOne

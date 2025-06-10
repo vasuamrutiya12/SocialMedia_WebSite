@@ -5,6 +5,7 @@ import com.master.InstagramClone.exceptions.UserExceptions;
 import com.master.InstagramClone.models.User;
 import com.master.InstagramClone.repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,16 +19,22 @@ public class userServiceImplementation implements UserService {
 
     @Override
     public User save(User user) {
-        User newUser = new User();
-        newUser.setId(user.getId());
-        newUser.setFirstName(user.getFirstName());
-        newUser.setLastName(user.getLastName());
-        newUser.setEmail(user.getEmail());
-        newUser.setPassword(user.getPassword());
-        newUser.setGender(user.getGender());
-        User savedUser = userRepo.save(newUser);
-        return savedUser;
+        if (user.getEmail() == null) {
+            throw new IllegalArgumentException("Email cannot be null");
+        }
+
+        // Check if the user already exists
+        if (userRepo.findByEmail(user.getEmail())==null) {
+            throw new IllegalArgumentException("User already exists with email: " + user.getEmail());
+        }
+
+        // Encode the password
+        user.setPassword(user.getPassword());
+
+        // Save the user directly
+        return userRepo.save(user);
     }
+
 
     @Override
     public List<User> findAllUsers() {

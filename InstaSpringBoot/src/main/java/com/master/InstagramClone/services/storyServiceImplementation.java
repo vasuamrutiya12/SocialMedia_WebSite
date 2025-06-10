@@ -34,6 +34,11 @@ public class storyServiceImplementation implements StoryService{
     }
 
     @Override
+    public List<Story> findAllStory() throws Exception {
+        return storyRepo.findAll();
+    }
+
+    @Override
     public List<Story> findStoryByUserId(Integer userId) throws Exception {
         User user = userService.findUserById(userId);
         return storyRepo.findByUserId(userId);

@@ -1,6 +1,9 @@
 package com.master.InstagramClone.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class LoginRequest {
+    @JsonProperty("email")
     private String email;
     private String password;
 
