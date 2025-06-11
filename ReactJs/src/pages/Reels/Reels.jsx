@@ -2,20 +2,18 @@ import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createReel, getAllReels } from "../../Redux/Reels/reels.action";
 import { uploadToCloudinary } from "../../utils/uploadToCloudinary";
-import {
-  FaHeart,
-  FaCommentDots,
-  FaPlus,
-  FaTimes,
-  FaShare,
-  FaBookmark,
-} from "react-icons/fa";
+import { FaPlus, FaTimes } from "react-icons/fa";
+import ReelActions from "../../components/Reels/ReelActions";
+import { createMessage } from "../../Redux/Message/message.action";
 
 const Reels = () => {
   const dispatch = useDispatch();
   const { reels = [] } = useSelector((state) => state.reels) || {};
+  const { auth } = useSelector((store) => store);
 
   const [showForm, setShowForm] = useState(false);
+  const [showChatSelector, setShowChatSelector] = useState(false);
+  const [selectedReel, setSelectedReel] = useState(null);
   const [title, setTitle] = useState("");
   const [videoFile, setVideoFile] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -52,6 +50,28 @@ const Reels = () => {
     }
   };
 
+  const handleShareReel = (reel) => {
+    setSelectedReel(reel);
+    setShowChatSelector(true);
+  };
+
+  const handleSaveReel = (reel) => {
+    // Implement save reel functionality
+    console.log("Saving reel:", reel);
+    // You can dispatch an action to save the reel to user's saved items
+  };
+
+  const formatTime = (timestamp) => {
+    const now = new Date();
+    const time = new Date(timestamp);
+    const diffInMinutes = Math.floor((now - time) / (1000 * 60));
+
+    if (diffInMinutes < 1) return "Just now";
+    if (diffInMinutes < 60) return `${diffInMinutes}m ago`;
+    if (diffInMinutes < 1440) return `${Math.floor(diffInMinutes / 60)}h ago`;
+    return `${Math.floor(diffInMinutes / 1440)}d ago`;
+  };
+
   return (
     <div className="relative flex-1 h-screen overflow-y-scroll no-scrollbar snap-y snap-mandatory bg-black rounded-3xl shadow-xl">
       {/* Reels Viewer */}
@@ -73,57 +93,35 @@ const Reels = () => {
               onClick={() => handleTogglePlay(reel.id)}
             />
 
-            {/* Side Icons - Positioned more centrally like Instagram */}
-            <div className="absolute right-3 top-3/4 transform -translate-y-1/2 flex flex-col items-center gap-6 text-white z-10">
-              <div className="flex flex-col items-center">
-                <button className="hover:scale-110 transition-transform duration-200">
-                  <FaHeart className="text-white text-3xl mb-1" />
-                </button>
-                <span className="text-xs font-medium">45.6K</span>
-              </div>
+            {/* Reel Actions */}
+            <ReelActions
+              reel={reel}
+              onShare={handleShareReel}
+              onSave={handleSaveReel}
+            />
 
-              <div className="flex flex-col items-center">
-                <button className="hover:scale-110 transition-transform duration-200">
-                  <FaCommentDots className="text-white text-3xl mb-1" />
-                </button>
-                <span className="text-xs font-medium">316</span>
-              </div>
-
-              <div className="flex flex-col items-center">
-                <button className="hover:scale-110 transition-transform duration-200">
-                  <FaShare className="text-white text-3xl mb-1" />
-                </button>
-              </div>
-
-              <div className="flex flex-col items-center">
-                <button className="hover:scale-110 transition-transform duration-200">
-                  <FaBookmark className="text-white text-3xl mb-1" />
-                </button>
-              </div>
-
-              {/* Profile picture at bottom of side icons */}
-              <div className="mt-2">
-                <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full p-0.5">
-                  <div className="w-full h-full bg-white rounded-full flex items-center justify-center">
-                    <div className="w-10 h-10 bg-gray-300 rounded-full"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Bottom Text Overlay - Instagram style */}
+            {/* Bottom Text Overlay */}
             <div className="absolute bottom-4 left-4 right-20 text-white z-10">
               {/* Username and Follow button */}
               <div className="flex items-center gap-3 mb-3">
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 bg-white rounded-full"></div>
+                  <img
+                    src={
+                      reel.user?.profile ||
+                      `https://ui-avatars.com/api/?name=${reel.user?.firstName}&background=random`
+                    }
+                    alt={reel.user?.firstName}
+                    className="w-8 h-8 rounded-full object-cover"
+                  />
                   <span className="font-semibold text-sm">
-                    @{reel.user?.firstName || "user"}
+                    @{reel.user?.firstName?.toLowerCase() || "user"}
                   </span>
                 </div>
-                <button className="border border-white px-4 py-1 rounded-md text-xs font-medium hover:bg-white hover:text-black transition-colors">
-                  Follow
-                </button>
+                {reel.user?.id !== auth.user?.id && (
+                  <button className="border border-white px-4 py-1 rounded-md text-xs font-medium hover:bg-white hover:text-black transition-colors">
+                    Follow
+                  </button>
+                )}
               </div>
 
               {/* Caption */}
@@ -131,14 +129,17 @@ const Reels = () => {
                 <p className="break-words">{reel.title}</p>
               </div>
 
-              {/* Audio info */}
-              <div className="flex items-center gap-2 text-xs opacity-80">
-                <div className="w-3 h-3 bg-white rounded-full animate-spin"></div>
-                <span>Original audio</span>
+              {/* Time and Audio info */}
+              <div className="flex items-center justify-between text-xs opacity-80">
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 bg-white rounded-full animate-spin"></div>
+                  <span>Original audio</span>
+                </div>
+                <span>{formatTime(reel.createdAt)}</span>
               </div>
             </div>
 
-            {/* Top overlay with Instagram branding */}
+            {/* Top overlay */}
             <div className="absolute top-4 left-4 right-4 flex justify-between items-center text-white z-10">
               <div className="text-xl font-bold">Reels</div>
               <div className="w-6 h-6 bg-white bg-opacity-20 rounded-full"></div>
@@ -194,14 +195,47 @@ const Reels = () => {
               </button>
               <button
                 onClick={handleUpload}
-                disabled={loading}
+                disabled={loading || !title || !videoFile}
                 className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
-                  loading
+                  loading || !title || !videoFile
                     ? "bg-purple-400/50 cursor-not-allowed"
                     : "bg-purple-500 hover:bg-purple-600"
                 }`}
               >
                 {loading ? "Uploading..." : "Upload"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Chat Selector Modal for Sharing */}
+      {showChatSelector && selectedReel && (
+        <div className="fixed inset-0 bg-black bg-opacity-80 flex justify-center items-center z-50">
+          <div className="w-full max-w-md bg-gray-900 rounded-2xl p-6 text-white">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold">Share Reel</h3>
+              <button
+                onClick={() => setShowChatSelector(false)}
+                className="text-gray-400 hover:text-white"
+              >
+                <FaTimes />
+              </button>
+            </div>
+            
+            <div className="text-center py-8">
+              <p className="text-gray-400">Chat selector will be implemented here</p>
+              <p className="text-sm text-gray-500 mt-2">
+                This will show your chat list to share the reel
+              </p>
+            </div>
+
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setShowChatSelector(false)}
+                className="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors"
+              >
+                Cancel
               </button>
             </div>
           </div>

@@ -13,6 +13,7 @@ import {
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useSelector } from "react-redux";
+import NotificationBell from "../Notifications/NotificationBell";
 
 const Sidebar = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -23,13 +24,17 @@ const Sidebar = () => {
   const handleClick = (event) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    window.location.reload();
+  };
+
   return (
     <Card
       elevation={0}
       sx={{
         height: "95vh",
         background: "linear-gradient(180deg, #000000, rgba(135, 60, 255, 0.3))",
-
         borderRadius: "24px",
         display: "flex",
         flexDirection: "column",
@@ -96,6 +101,11 @@ const Sidebar = () => {
                   <Typography variant="body2" sx={{ fontWeight: "inherit" }}>
                     {item.title}
                   </Typography>
+                  {item.title === "Notifications" && (
+                    <Box sx={{ ml: "auto" }}>
+                      <NotificationBell />
+                    </Box>
+                  )}
                 </Box>
               </Link>
             );
@@ -118,7 +128,10 @@ const Sidebar = () => {
         >
           <Avatar
             alt="User Avatar"
-            src="https://images.pexels.com/photos/19590514/pexels-photo-19590514/free-photo-of-face-of-model-illuminated-with-flame.jpeg?auto=compress&cs=tinysrgb&w=300&lazy=load"
+            src={
+              auth.user?.profile ||
+              `https://ui-avatars.com/api/?name=${auth.user?.firstName}&background=random`
+            }
             sx={{
               width: 42,
               height: 42,
@@ -181,7 +194,7 @@ const Sidebar = () => {
             anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
           >
             <MenuItem
-              onClick={handleClose}
+              onClick={handleLogout}
               sx={{
                 display: "flex",
                 gap: 1,
