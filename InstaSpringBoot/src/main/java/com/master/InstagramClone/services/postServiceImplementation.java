@@ -2,6 +2,7 @@ package com.master.InstagramClone.services;
 
 import com.master.InstagramClone.models.Post;
 import com.master.InstagramClone.models.User;
+import com.master.InstagramClone.models.Notification;
 import com.master.InstagramClone.repo.PostRepo;
 import com.master.InstagramClone.repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,9 @@ public class postServiceImplementation implements PostService{
 
     @Autowired
     UserRepo userRepo;
+
+    @Autowired
+    NotificationService notificationService;
 
     @Override
     public Post createPost(Post post, Integer userId) throws Exception {
@@ -85,6 +89,18 @@ public class postServiceImplementation implements PostService{
             user.getSavedPost().remove(post);
         } else {
             user.getSavedPost().add(post);
+            
+            // Create notification for post save
+            if (!post.getUser().getId().equals(userId)) {
+                String message = user.getFirstName() + " saved your post";
+                notificationService.createPostNotification(
+                    user, 
+                    post.getUser(), 
+                    post, 
+                    Notification.NotificationType.SAVE, 
+                    message
+                );
+            }
         }
 
         userRepo.save(user);
@@ -97,10 +113,24 @@ public class postServiceImplementation implements PostService{
         Post post = findByPostId(postId);
         User user = userService.findUserById(userId);
 
-        if (post.getLiked().contains(user)) {
+        boolean wasLiked = post.getLiked().contains(user);
+
+        if (wasLiked) {
             post.getLiked().remove(user);
         } else {
             post.getLiked().add(user);
+            
+            // Create notification for post like
+            if (!post.getUser().getId().equals(userId)) {
+                String message = user.getFirstName() + " liked your post";
+                notificationService.createPostNotification(
+                    user, 
+                    post.getUser(), 
+                    post, 
+                    Notification.NotificationType.LIKE, 
+                    message
+                );
+            }
         }
 
         postRepo.save(post);

@@ -18,7 +18,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureMessageBroker (MessageBrokerRegistry registry){
         registry.setApplicationDestinationPrefixes("/app");
-        registry.enableSimpleBroker("/group","/user","/chat");
+        registry.enableSimpleBroker("/group","/user","/chat","/notifications");
         registry.setUserDestinationPrefix("/user");
     }
 

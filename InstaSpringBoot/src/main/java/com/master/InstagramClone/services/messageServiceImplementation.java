@@ -3,6 +3,7 @@ package com.master.InstagramClone.services;
 import com.master.InstagramClone.models.Chat;
 import com.master.InstagramClone.models.Message;
 import com.master.InstagramClone.models.User;
+import com.master.InstagramClone.models.Notification;
 import com.master.InstagramClone.repo.ChatRepo;
 import com.master.InstagramClone.repo.MessageRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,9 @@ public class messageServiceImplementation implements MessageService{
 
     @Autowired
     private ChatRepo chatRepo;
+
+    @Autowired
+    private NotificationService notificationService;
 
     @Override
     public Message createMessage(User user, Integer chatId, Message message) throws Exception {
@@ -44,6 +48,19 @@ public class messageServiceImplementation implements MessageService{
 
         chat.getMessages().add(savedMessage);
         chatRepo.save(chat);
+
+        // Create notification for message (to other participants)
+        for (User participant : chat.getUsers()) {
+            if (!participant.getId().equals(user.getId())) {
+                String notificationMessage = user.getFirstName() + " sent you a message";
+                notificationService.createNotification(
+                    user, 
+                    participant, 
+                    Notification.NotificationType.MESSAGE, 
+                    notificationMessage
+                );
+            }
+        }
 
         return savedMessage;
     }

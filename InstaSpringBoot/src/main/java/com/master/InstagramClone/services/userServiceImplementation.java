@@ -3,6 +3,7 @@ package com.master.InstagramClone.services;
 import com.master.InstagramClone.config.JwtProvider;
 import com.master.InstagramClone.exceptions.UserExceptions;
 import com.master.InstagramClone.models.User;
+import com.master.InstagramClone.models.Notification;
 import com.master.InstagramClone.repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -16,6 +17,9 @@ public class userServiceImplementation implements UserService {
 
     @Autowired
     UserRepo userRepo;
+
+    @Autowired
+    NotificationService notificationService;
 
     @Override
     public User save(User user) {
@@ -106,11 +110,28 @@ public class userServiceImplementation implements UserService {
     @Override
     public User followUser(Integer reqUserid, Integer userid) throws UserExceptions {
         User reqUser = findUserById(reqUserid);
-
         User user = findUserById(userid);
 
-        reqUser.getFollowing().add(user.getId());
-        user.getFollowers().add(reqUser.getId());
+        boolean isAlreadyFollowing = reqUser.getFollowing().contains(user.getId());
+
+        if (isAlreadyFollowing) {
+            // Unfollow
+            reqUser.getFollowing().remove(user.getId());
+            user.getFollowers().remove(reqUser.getId());
+        } else {
+            // Follow
+            reqUser.getFollowing().add(user.getId());
+            user.getFollowers().add(reqUser.getId());
+
+            // Create notification for new follow
+            String message = reqUser.getFirstName() + " started following you";
+            notificationService.createNotification(
+                reqUser, 
+                user, 
+                Notification.NotificationType.FOLLOW, 
+                message
+            );
+        }
 
         userRepo.save(reqUser);
         userRepo.save(user);

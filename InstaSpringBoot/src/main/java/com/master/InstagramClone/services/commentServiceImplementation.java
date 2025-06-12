@@ -3,6 +3,7 @@ package com.master.InstagramClone.services;
 import com.master.InstagramClone.models.Comment;
 import com.master.InstagramClone.models.Post;
 import com.master.InstagramClone.models.User;
+import com.master.InstagramClone.models.Notification;
 import com.master.InstagramClone.repo.CommentRepo;
 import com.master.InstagramClone.repo.PostRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,9 @@ public class commentServiceImplementation implements CommentService{
     @Autowired
     private PostRepo postRepo;
 
+    @Autowired
+    private NotificationService notificationService;
+
     @Override
     public Comment createComment(Comment comment, Integer postId, Integer userId) throws Exception {
 
@@ -39,8 +43,19 @@ public class commentServiceImplementation implements CommentService{
         Comment newComment = commentRepo.save(comment);
 
         post.getComments().add(newComment);
-
         postRepo.save(post);
+
+        // Create notification for comment
+        if (!post.getUser().getId().equals(userId)) {
+            String message = user.getFirstName() + " commented on your post";
+            notificationService.createCommentNotification(
+                user, 
+                post.getUser(), 
+                newComment, 
+                message
+            );
+        }
+
         return newComment;
     }
 
