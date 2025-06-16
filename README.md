@@ -1,193 +1,167 @@
-# Instagram Clone
+# 📸 SnapSphere
 
-A full-stack Instagram clone application built with Spring Boot and React.js.
+**SnapSphere** is a modern, full-stack social media application built with **Spring Boot** and **React.js**. It supports real-time messaging, user-generated posts, notifications, and all essential features of a next-gen image-first social platform.
 
-## Project Structure
+---
 
-The project consists of two main parts:
-- Backend: Spring Boot application (`InstaSpringBoot/`)
-- Frontend: React.js application (`ReactJs/`)
+## 🗂️ Project Structure
 
-## Backend (Spring Boot)
+```
+snapsphere/
+├── SnapSphereBackend/   → Backend (Spring Boot)
+└── SnapSphereFrontend/  → Frontend (React + Vite + Tailwind)
+```
 
-### Technologies Used
+---
+
+## 🚀 Backend – Spring Boot
+
+### 🛠 Technologies
 - Java 17
 - Spring Boot
-- Spring Security
+- Spring Security (JWT)
 - Spring Data JPA
-- MySQL Database
+- PostgreSQL
 - Maven
 
-### Prerequisites
-- Java 17 or higher
+### 📋 Prerequisites
+- Java 17+
 - Maven
-- MySQL Server
+- PostgreSQL Database
 
-### Setup Instructions
-1. Navigate to the backend directory:
+### ⚙️ Setup Instructions
+
+1. **Navigate to the backend directory:**
    ```bash
-   cd InstaSpringBoot
+   cd SnapSphereBackend
    ```
 
-2. Configure the database connection in `application.properties`:
+2. **Configure database in `application.properties`:**
    ```properties
-   spring.datasource.url=jdbc:mysql://localhost:3306/instagram_clone
+   spring.datasource.url=jdbc:postgresql://localhost:5432/snapsphere_db
    spring.datasource.username=your_username
    spring.datasource.password=your_password
+   spring.jpa.hibernate.ddl-auto=update
+   spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
    ```
 
-3. Build the project:
+3. **Build the backend:**
    ```bash
    ./mvnw clean install
    ```
 
-4. Run the application:
+4. **Run the application:**
    ```bash
    ./mvnw spring-boot:run
    ```
 
-The backend server will start on `http://localhost:8080`
+➡ Backend available at: [http://localhost:8080](http://localhost:8080)
 
-## Frontend (React.js)
+---
 
-### Technologies Used
+## 💻 Frontend – React.js
+
+### 🛠 Technologies
 - React.js
 - Vite
 - Tailwind CSS
-- ESLint
 - PostCSS
+- ESLint
 
-### Prerequisites
-- Node.js (v14 or higher)
+### 📋 Prerequisites
+- Node.js (v14+)
 - npm or yarn
 
-### Setup Instructions
-1. Navigate to the frontend directory:
+### ⚙️ Setup Instructions
+
+1. **Navigate to the frontend directory:**
    ```bash
-   cd ReactJs
+   cd SnapSphereFrontend
    ```
 
-2. Install dependencies:
+2. **Install dependencies:**
    ```bash
    npm install
    ```
 
-3. Start the development server:
+3. **Start the dev server:**
    ```bash
    npm run dev
    ```
 
-The frontend application will start on `http://localhost:5173`
+➡ Frontend available at: [http://localhost:5173](http://localhost:5173)
 
-## Features
+---
 
-### Backend Features
+## 🎯 Key Features
 
-#### User Management
-- Secure user registration and login system
-- JWT-based authentication
-- Password encryption and security
-- User profile management
-- Email verification system
-- Password reset functionality
+### 🔐 Authentication & Users
+- JWT-based login and registration
+- Email verification and password reset
+- Profile customization and secure data handling
 
-#### Post Management
-- Create, read, update, and delete posts
-- Image upload and storage
-- Post caption and location support
-- Post privacy settings
-- Post archiving functionality
-- Post analytics (views, likes, comments)
+### 📸 Media Sharing
+- Image uploads with captions, locations, and tags
+- Multi-image carousels
+- Post scheduling, archiving, and visibility settings
 
-#### Social Features
-- Follow/Unfollow system
-- User feed generation
-- Activity feed
-- User suggestions
-- Block/Unblock users
-- Report inappropriate content
+### 🤝 Social Connectivity
+- Follow/unfollow users
+- User suggestions and discovery
+- Block/report features for safety
 
-#### Interaction Features
-- Like and unlike posts
-- Comment system with nested replies
-- Save posts to collections
-- Share posts
-- Tag users in posts and comments
-- Mention notifications
+### 💬 Interactions
+- Likes, comments, and threaded replies
+- Save to personal collections
+- Tag users and use hashtags
 
-#### Messaging System
-- Real-time direct messaging
-- Group chat functionality
-- Message read receipts
-- Media sharing in messages
-- Message search
-- Message archiving
+### 💬 Messaging System
+- Real-time 1:1 and group chat
+- Media sharing and emoji support
+- Read receipts and message search
 
-#### Notification System
-- Real-time notifications
-- Push notifications
-- Email notifications
-- Notification preferences
-- Notification history
+### 🔔 Notifications
+- In-app and email notifications
+- Push notification support
+- Notification history and preferences
 
-### Frontend Features
+### 🌐 UX & Design
+- Responsive design (mobile-first)
+- Dark and light mode
+- Smooth animations and infinite scroll
 
-#### User Interface
-- Modern, responsive design
-- Dark/Light mode support
-- Customizable user profiles
-- Infinite scroll feed
-- Smooth animations and transitions
-- Mobile-first approach
+---
 
-#### Post Features
-- Image upload with preview
-- Multiple image support
-- Image filters and editing
-- Carousel for multiple images
-- Post creation wizard
-- Post scheduling
+## 📊 Additional Capabilities
+- Stories and highlights
+- Explore trending users and posts
+- Analytics dashboard for user engagement
+- Advanced search (users, tags, content)
 
-#### Social Features
-- User profile customization
-- Story creation and viewing
-- Highlights management
-- Follow/Unfollow functionality
-- User search and discovery
-- Activity tracking
+---
 
-#### Interaction Features
-- Like and comment system
-- Share posts to other platforms
-- Save posts to collections
-- Tag users in posts
-- Location tagging
-- Hashtag support
+## 🧑‍💻 Contributing
 
-#### Messaging Interface
-- Real-time chat interface
-- Message status indicators
-- Media sharing in chat
-- Emoji support
-- Message search
-- Chat organization
+We welcome community contributions!
 
-#### Additional Features
-- Advanced search functionality
-- Content discovery
-- Explore page
-- Saved collections
-- User analytics
-- Account privacy settings
+1. **Fork the repo**
+2. **Create your feature branch:**
+   ```bash
+   git checkout -b feature/YourFeatureName
+   ```
+3. **Commit your changes:**
+   ```bash
+   git commit -m "Add: Your feature description"
+   ```
+4. **Push to GitHub:**
+   ```bash
+   git push origin feature/YourFeatureName
+   ```
+5. **Open a Pull Request**
 
-## Contributing
+---
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+## 📄 License
 
-## License
+This project is licensed under the [MIT License](LICENSE).
 
-This project is licensed under the MIT License - see the LICENSE file for details. 
